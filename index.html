@@ -1,134 +1,220 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Guia Inteligente – Crie seu Roteiro Perfeito</title>
+<meta charset="UTF-8">
+<title>Guia Inteligente</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="style.css" />
+<!-- GOOGLE MAPS API -->
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=SUA_API_KEY_AQUI&libraries=places&callback=initMap"
+  async defer>
+</script>
 
-  <!-- GOOGLE MAPS + PLACES API -->
-  <script
-    src="https://maps.googleapis.com/maps/api/js?key=SUA_API_KEY_AQUI&libraries=places"
-    async
-    defer>
-  </script>
+<!-- ================== STYLE CSS ================== -->
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background: #f2f4f8;
+  color: #333;
+}
+
+header {
+  background: linear-gradient(90deg, #1976d2, #2196f3);
+  color: #fff;
+  padding: 16px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.container {
+  display: flex;
+  height: calc(100vh - 64px);
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 360px;
+  background: #ffffff;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.filters button {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #e3f2fd;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.filters button:hover {
+  background: #bbdefb;
+}
+
+/* LISTA */
+.list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.item {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: #f5f5f5;
+}
+
+.item strong {
+  display: block;
+  font-size: 14px;
+}
+
+.item span {
+  font-size: 12px;
+  color: #666;
+}
+
+/* MAPA */
+#map {
+  flex: 1;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: 45%;
+  }
+
+  #map {
+    height: 55%;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <!-- TOPO -->
-  <header class="top-bar">
-    🌍 Guia Inteligente
-  </header>
+<header>Guia Inteligente — Hotéis, Restaurantes e Pontos Próximos</header>
 
-  <!-- CONTAINER PRINCIPAL -->
-  <main class="container">
-    <span class="badge">Planejamento Inteligente de Viagens</span>
+<div class="container">
 
-    <h1>Crie seu <span>Roteiro Perfeito</span></h1>
-    <p>
-      A inteligência artificial analisa seu perfil e cria um roteiro completo
-      com mapas, restaurantes e hospedagens.
-    </p>
-
-    <!-- DESTINO -->
-    <div class="form-group">
-      <label>Destino</label>
-      <input
-        type="text"
-        id="destino"
-        placeholder="Ex: Paris, França"
-      />
+  <div class="sidebar">
+    <div class="filters">
+      <button onclick="buscar('lodging')">🏨 Hotéis</button>
+      <button onclick="buscar('restaurant')">🍽 Restaurantes</button>
+      <button onclick="buscar('tourist_attraction')">📸 Turismo</button>
+      <button onclick="buscar('store')">🛍 Outros</button>
     </div>
 
-    <!-- DATAS -->
-    <div class="row">
-      <div class="form-group">
-        <label>Data de Início</label>
-        <input type="date" id="inicio" />
-      </div>
-      <div class="form-group">
-        <label>Data de Término</label>
-        <input type="date" id="fim" />
-      </div>
-    </div>
+    <div class="list" id="lista"></div>
+  </div>
 
-    <!-- ORÇAMENTO -->
-    <div class="form-group">
-      <label>Orçamento</label>
-      <select id="orcamento">
-        <option value="">Selecione</option>
-        <option value="baixo">pobre</option>
-        <option value="medio">Médio</option>
-        <option value="alto">rico</option>
-      </select>
-    </div>
+  <div id="map"></div>
 
-    <!-- ESTILO -->
-    <div class="form-group">
-      <label>Estilo de Viagem</label>
-      <select id="estilo">
-        <option value="">Selecione</option>
-        <option value="romantica">Romântica</option>
-        <option value="aventura">Aventura</option>
-        <option value="luxo">Luxo</option>
-        <option value="familia">Família</option>
-        <option value="economica">Econômica</option>
-      </select>
-    </div>
+</div>
 
-    <!-- GASTRONOMIA -->
-    <div class="form-group">
-      <label>Preferência Gastronômica</label>
-      <select id="gastronomia">
-        <option value="">Selecione</option>
-        <option value="tradicional">Tradicional</option>
-        <option value="churrasco">Churrasco</option>
-        <option value="vegana">Vegana</option>
-        <option value="vegetariana">Vegetariana</option>
-      </select>
-    </div>
+<!-- ================== JAVASCRIPT ================== -->
+<script>
+let map;
+let service;
+let markers = [];
 
-    <!-- INTERESSES -->
-    <div class="form-group">
-      <label>Interesses</label>
-      <input
-        type="text"
-        id="interesses"
-        placeholder="Museus, natureza, compras..."
-      />
-    </div>
+function initMap() {
+  const centro = { lat: -22.9068, lng: -43.1729 }; // Rio de Janeiro (pode mudar)
 
-    <!-- BOTÃO -->
-    <button onclick="gerarRoteiro()">
-      Criar Roteiro Inteligente →
-    </button>
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: centro,
+    zoom: 14
+  });
 
-    <!-- RESULTADO IA -->
-    <div class="resultado" id="resultado"></div>
+  service = new google.maps.places.PlacesService(map);
 
-    <!-- MAPA -->
-    <div
-      id="map"
-      style="
-        width: 100%;
-        height: 280px;
-        margin-top: 20px;
-        border-radius: 14px;
-        display: none;
-      ">
-    </div>
-  </main>
+  buscar("lodging");
+}
 
-  <!-- RODAPÉ -->
-  <footer>
-    © 2026 Guia Inteligente. Todos os direitos reservados.
-  </footer>
+function buscar(tipo) {
+  limparMarkers();
+  document.getElementById("lista").innerHTML = "";
 
-  <!-- JAVASCRIPT -->
-  <script src="script.js"></script>
+  const request = {
+    location: map.getCenter(),
+    radius: 3000,
+    type: [tipo]
+  };
+
+  service.nearbySearch(request, (results, status) => {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      results.forEach(place => {
+        criarMarker(place);
+        criarItemLista(place);
+      });
+    }
+  });
+}
+
+function criarMarker(place) {
+  const marker = new google.maps.Marker({
+    map: map,
+    position: place.geometry.location
+  });
+
+  marker.addListener("click", () => {
+    map.setCenter(place.geometry.location);
+    map.setZoom(16);
+  });
+
+  markers.push(marker);
+}
+
+function criarItemLista(place) {
+  const div = document.createElement("div");
+  div.className = "item";
+
+  div.innerHTML = `
+    <strong>${place.name}</strong>
+    <span>${place.vicinity || "Endereço não disponível"}</span>
+  `;
+
+  div.onclick = () => {
+    map.setCenter(place.geometry.location);
+    map.setZoom(16);
+  };
+
+  document.getElementById("lista").appendChild(div);
+}
+
+function limparMarkers() {
+  markers.forEach(marker => marker.setMap(null));
+  markers = [];
+}
+</script>
 
 </body>
 </html>
