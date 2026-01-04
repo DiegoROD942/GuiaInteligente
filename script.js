@@ -3,11 +3,6 @@ let service;
 let markers = [];
 
 /* =========================
-   CONFIGURAÇÃO DA IA
-========================= */
-const OPENAI_API_KEY = "SUA_OPENAI_API_KEY_AQUI"; // ⚠️ TROQUE AQUI
-
-/* =========================
    INICIALIZAÇÃO
 ========================= */
 window.addEventListener("load", () => {
@@ -21,14 +16,9 @@ window.addEventListener("load", () => {
 /* =========================
    FUNÇÃO PRINCIPAL
 ========================= */
-async function gerarRoteiro() {
+function gerarRoteiro() {
   const destino = document.getElementById("destino").value;
-  const inicio = document.getElementById("inicio").value;
-  const fim = document.getElementById("fim").value;
-  const orcamento = document.getElementById("orcamento").value;
   const estilo = document.getElementById("estilo").value;
-  const gastronomia = document.getElementById("gastronomia").value;
-  const interesses = document.getElementById("interesses").value;
 
   if (!destino || !estilo) {
     alert("Preencha pelo menos o destino e o estilo de viagem.");
@@ -36,18 +26,6 @@ async function gerarRoteiro() {
   }
 
   inicializarMapa(destino);
-
-  const roteiroIA = await gerarRoteiroIA({
-    destino,
-    inicio,
-    fim,
-    orcamento,
-    estilo,
-    gastronomia,
-    interesses,
-  });
-
-  mostrarResultado(roteiroIA);
 }
 
 /* =========================
@@ -126,57 +104,3 @@ function limparMarcadores() {
   markers.forEach((marker) => marker.setMap(null));
   markers = [];
 }
-
-/* =========================
-   IA – GERAR ROTEIRO
-========================= */
-async function gerarRoteiroIA(dados) {
-  const prompt = `
-Você é um especialista em planejamento de viagens.
-
-Crie um roteiro completo e organizado por dias com base no perfil abaixo.
-Inclua:
-- Passeios
-- Restaurantes (café, almoço, jantar)
-- Sugestão de bairro para hospedagem
-- Linguagem clara e amigável
-
-Perfil:
-Destino: ${dados.destino}
-Datas: ${dados.inicio || "flexível"} até ${dados.fim || "flexível"}
-Orçamento: ${dados.orcamento || "médio"}
-Estilo: ${dados.estilo}
-Gastronomia: ${dados.gastronomia || "livre"}
-Interesses: ${dados.interesses || "personalizado"}
-
-Formato a resposta em HTML simples.
-`;
-
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.7,
-    }),
-  });
-
-  const data = await response.json();
-  return data.choices[0].message.content;
-}
-
-/* =========================
-   EXIBIR RESULTADO
-========================= */
-function mostrarResultado(conteudoIA) {
-  const resultado = document.getElementById("resultado");
-  resultado.style.display = "block";
-  resultado.innerHTML = `
-    ✨ <strong>Roteiro Criado por Inteligência Artificial</strong><br><br>
-    ${conteudoIA}
-  `;
-} 
