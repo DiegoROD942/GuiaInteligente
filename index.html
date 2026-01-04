@@ -1,134 +1,75 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Guia Inteligente – Crie seu Roteiro Perfeito</title>
+  <meta charset="UTF-8">
+  <title>Guia Inteligente</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 
-  <!-- GOOGLE MAPS + PLACES API -->
+  <!-- GOOGLE MAPS -->
   <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnfZWtP5agA7vxwd8BkkBOrP8BeoJ3VYU"
-    async
-    defer>
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnfZWtP5agA7vxwd8BkkBOrP8BeoJ3VYU&libraries=places&callback=initMap"
+    async defer>
   </script>
 </head>
 
 <body>
 
-  <!-- TOPO -->
-  <header class="top-bar">
-    🌍 Guia Inteligente
-  </header>
+<header>
+  <div class="logo">🧭 Guia Inteligente</div>
+  <nav>Meus Roteiros</nav>
+</header>
 
-  <!-- CONTAINER PRINCIPAL -->
-  <main class="container">
-    <span class="badge">Planejamento Inteligente de Viagens</span>
+<main id="formulario">
+  <div class="hero">
+    <div class="badge">✈️ Planejamento Inteligente de Viagens</div>
 
     <h1>Crie seu <span>Roteiro Perfeito</span></h1>
-    <p>
-      A inteligência artificial analisa seu perfil e cria um roteiro completo
-      com mapas, restaurantes e hospedagens.
-    </p>
+    <p>Preencha suas preferências e gere seu roteiro automaticamente.</p>
 
-    <!-- DESTINO -->
-    <div class="form-group">
-      <label>Destino</label>
-      <input
-        type="text"
-        id="destino"
-        placeholder="Ex: Paris, França"
-      />
-    </div>
+    <div class="card">
 
-    <!-- DATAS -->
-    <div class="row">
-      <div class="form-group">
-        <label>Data de Início</label>
-        <input type="date" id="inicio" />
-      </div>
-      <div class="form-group">
-        <label>Data de Término</label>
-        <input type="date" id="fim" />
-      </div>
-    </div>
+      <input id="destino" type="text" placeholder="Destino (Ex: Paris, França)">
 
-    <!-- ORÇAMENTO -->
-    <div class="form-group">
-      <label>Orçamento</label>
-      <select id="orcamento">
-        <option value="">Selecione</option>
-        <option value="baixo">pobre</option>
-        <option value="medio">Médio</option>
-        <option value="alto">rico</option>
+      <select id="dias">
+        <option value="">Quantos dias ficará?</option>
+        <option value="1">1 a 2 dias</option>
+        <option value="3">3 a 4 dias</option>
+        <option value="5">5 dias ou mais</option>
       </select>
-    </div>
 
-    <!-- ESTILO -->
-    <div class="form-group">
-      <label>Estilo de Viagem</label>
-      <select id="estilo">
-        <option value="">Selecione</option>
-        <option value="romantica">Romântica</option>
-        <option value="aventura">Aventura</option>
-        <option value="luxo">Luxo</option>
-        <option value="familia">Família</option>
-        <option value="economica">Econômica</option>
+      <select id="ambiente">
+        <option value="">Ambientes preferidos</option>
+        <option value="tourist_attraction">Turístico / Cultural</option>
+        <option value="park">Natureza / Parques</option>
+        <option value="shopping_mall">Compras / Shoppings</option>
+        <option value="night_club">Vida Noturna</option>
       </select>
-    </div>
 
-    <!-- GASTRONOMIA -->
-    <div class="form-group">
-      <label>Preferência Gastronômica</label>
-      <select id="gastronomia">
-        <option value="">Selecione</option>
-        <option value="tradicional">Tradicional</option>
-        <option value="churrasco">Churrasco</option>
-        <option value="vegana">Vegana</option>
-        <option value="vegetariana">Vegetariana</option>
+      <select id="restaurante">
+        <option value="">Tipo de restaurante</option>
+        <option value="restaurant">Tradicional</option>
+        <option value="vegan_restaurant">Vegano</option>
+        <option value="barbecue_restaurant">Churrasco</option>
+        <option value="seafood_restaurant">Frutos do Mar</option>
       </select>
+
+      <select id="gasto">
+        <option value="">Gasto pretendido</option>
+        <option value="low">R$ 500 a 1.000 (Baixo)</option>
+        <option value="medium">R$ 1.000 a 4.000 (Médio)</option>
+        <option value="high">R$ 5.000 ou mais</option>
+      </select>
+
+      <button onclick="criarRoteiro()">✨ Criar Roteiro Personalizado →</button>
+
     </div>
+  </div>
+</main>
 
-    <!-- INTERESSES -->
-    <div class="form-group">
-      <label>Interesses</label>
-      <input
-        type="text"
-        id="interesses"
-        placeholder="Museus, natureza, compras..."
-      />
-    </div>
+<div id="map"></div>
 
-    <!-- BOTÃO -->
-    <button onclick="gerarRoteiro()">
-      Criar Roteiro Inteligente →
-    </button>
-
-    <!-- RESULTADO IA -->
-    <div class="resultado" id="resultado"></div>
-
-    <!-- MAPA -->
-    <div
-      id="map"
-      style="
-        width: 100%;
-        height: 280px;
-        margin-top: 20px;
-        border-radius: 14px;
-        display: none;
-      ">
-    </div>
-  </main>
-
-  <!-- RODAPÉ -->
-  <footer>
-    © 2026 Guia Inteligente. Todos os direitos reservados.
-  </footer>
-
-  <!-- JAVASCRIPT -->
-  <script src="script.js"></script>
-
+<script src="script.js"></script>
 </body>
 </html>
