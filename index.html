@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guia Inteligente – Crie seu Roteiro Perfeito</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- GOOGLE MAPS + PLACES API -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=SUA_API_KEY_AQUI&libraries=places"
+    async
+    defer>
+  </script>
+</head>
+
+<body>
+
+  <!-- TOPO -->
+  <header class="top-bar">
+    🌍 Guia Inteligente
+  </header>
+
+  <!-- CONTAINER PRINCIPAL -->
+  <main class="container">
+    <span class="badge">Planejamento Inteligente de Viagens</span>
+
+    <h1>Crie seu <span>Roteiro Perfeito</span></h1>
+    <p>
+      A inteligência artificial analisa seu perfil e cria um roteiro completo
+      com mapas, restaurantes e hospedagens.
+    </p>
+
+    <!-- DESTINO -->
+    <div class="form-group">
+      <label>Destino</label>
+      <input
+        type="text"
+        id="destino"
+        placeholder="Ex: Paris, França"
+      />
+    </div>
+
+    <!-- DATAS -->
+    <div class="row">
+      <div class="form-group">
+        <label>Data de Início</label>
+        <input type="date" id="inicio" />
+      </div>
+      <div class="form-group">
+        <label>Data de Término</label>
+        <input type="date" id="fim" />
+      </div>
+    </div>
+
+    <!-- ORÇAMENTO -->
+    <div class="form-group">
+      <label>Orçamento</label>
+      <select id="orcamento">
+        <option value="">Selecione</option>
+        <option value="baixo">pobre</option>
+        <option value="medio">Médio</option>
+        <option value="alto">rico</option>
+      </select>
+    </div>
+
+    <!-- ESTILO -->
+    <div class="form-group">
+      <label>Estilo de Viagem</label>
+      <select id="estilo">
+        <option value="">Selecione</option>
+        <option value="romantica">Romântica</option>
+        <option value="aventura">Aventura</option>
+        <option value="luxo">Luxo</option>
+        <option value="familia">Família</option>
+        <option value="economica">Econômica</option>
+      </select>
+    </div>
+
+    <!-- GASTRONOMIA -->
+    <div class="form-group">
+      <label>Preferência Gastronômica</label>
+      <select id="gastronomia">
+        <option value="">Selecione</option>
+        <option value="tradicional">Tradicional</option>
+        <option value="churrasco">Churrasco</option>
+        <option value="vegana">Vegana</option>
+        <option value="vegetariana">Vegetariana</option>
+      </select>
+    </div>
+
+    <!-- INTERESSES -->
+    <div class="form-group">
+      <label>Interesses</label>
+      <input
+        type="text"
+        id="interesses"
+        placeholder="Museus, natureza, compras..."
+      />
+    </div>
+
+    <!-- BOTÃO -->
+    <button onclick="gerarRoteiro()">
+      Criar Roteiro Inteligente →
+    </button>
+
+    <!-- RESULTADO IA -->
+    <div class="resultado" id="resultado"></div>
+
+    <!-- MAPA -->
+    <div
+      id="map"
+      style="
+        width: 100%;
+        height: 280px;
+        margin-top: 20px;
+        border-radius: 14px;
+        display: none;
+      ">
+    </div>
+  </main>
+
+  <!-- RODAPÉ -->
+  <footer>
+    © 2026 Guia Inteligente. Todos os direitos reservados.
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <script src="script.js"></script>
+
+</body>
+</html>
